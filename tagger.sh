@@ -17,7 +17,8 @@ while getopts ":m:u:" opt; do
   case $opt in
     m) GIT_MAIL="$OPTARG" ;;
     u) GIT_USER="$OPTARG" ;;
-    :) echo "Option -$OPTARG requires an argument." >&2; exit 1 ;;
+    :) echo "Option -$OPTARG requires an argument. Exiting." >&2; exit 1 ;;
+    *) echo "Invalid option passed. Exiting." >&2; exit 1 ;;
   esac
 done
 
@@ -32,10 +33,16 @@ git tag --points-at
 [[ $(git tag --points-at) ]] && exit 0
 
 # Create tag
-GIT_TAG=$([[ "$TRAVIS_COMMIT_MESSAGE" =~ ("Merge pull request".*\[feature\].*) ]] && git semver --next-minor || git semver --next-patch )
+# shellcheck disable=SC2059
+if [[ "$TRAVIS_COMMIT_MESSAGE" =~ ("Merge pull request".*\[feature\].*) ]]
+then
+    GIT_TAG=$(git semver --next-minor)
+else
+    GIT_TAG=$(git semver --next-patch)
+fi
 echo "$TRAVIS_COMMIT_MESSAGE"
 echo $GIT_TAG
 
 # Tag and push to remote repo
-git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
-git push https://${GH_TOKEN}:@${GIT_URL} --tags || exit 0
+git tag "$GIT_TAG" -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+git push "https://${GH_TOKEN}:@${GIT_URL}" --tags || exit 0
