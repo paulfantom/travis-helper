@@ -40,8 +40,8 @@ then
 else
     GIT_TAG=$(git semver --next-patch)
 fi
-echo "$TRAVIS_COMMIT_MESSAGE"
-echo $GIT_TAG
+echo "Last commit message: $TRAVIS_COMMIT_MESSAGE"
+echo "Assigning new tag: $GIT_TAG"
 
 # Tag and push to remote repo
 git tag "$GIT_TAG" -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
