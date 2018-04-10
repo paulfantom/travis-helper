@@ -29,6 +29,8 @@ git config --global user.email "${GIT_MAIL}"
 git config --global user.name "${GIT_USER}"
 
 # Generate CHANGELOG.md
+git checkout master
+git pull
 docker run -it --rm -v "$(pwd)":/usr/local/src/your-app ferrarimarco/github-changelog-generator \
                -u "${ORGANIZATION}" -p "${PROJECT}" --token "${GH_TOKEN}" \
                --release-url "https://galaxy.ansible.com/${ORGANIZATION}/${PROJECT}" \
