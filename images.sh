@@ -1,4 +1,3 @@
-
 #!/bin/bash
 #
 # Script downloads latest docker images from https://github.com/paulfantom/dockerfiles
