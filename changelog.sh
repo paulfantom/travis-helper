@@ -27,6 +27,8 @@ done
 # Git config
 git config --global user.email "${GIT_MAIL}"
 git config --global user.name "${GIT_USER}"
+GIT_URL=$(git config --get remote.origin.url)
+GIT_URL=${GIT_URL#*//}
 
 # Generate CHANGELOG.md
 git checkout master
