@@ -34,7 +34,7 @@ VERSION=$(curl "$LINK" 2>/dev/null | jq -r '.tag_name' | sed 's/^v//')
 
 git clone --depth=1 "https://github.com/cloudalchemy/ansible-$TARGET.git" "/tmp/ansible-$TARGET"
 cd "/tmp/ansible-$TARGET" || exit 1
-CURR="$(grep "_version" defaults/main.yml | awk -F ': ' '{print $2}')"
+CURR=$(grep "_version" defaults/main.yml | awk -F ': ' '{print $2}')
 
 if [ "${CURR}" == "${VERSION}" ]; then
     echo "Latest version already commited"
