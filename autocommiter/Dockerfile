@@ -1,9 +1,13 @@
-#FROM alpine/git
-FROM samueldebruyn/debian-git
+FROM debian:stable-slim
 
-COPY autocommiter.sh /opt/autocommiter.sh
-RUN chmod +x /opt/autocommiter.sh && \
+ENV DEBIAN_FRONTEND noninteractive
+
+WORKDIR /opt
+COPY autocommiter.sh autocommiter.sh
+RUN chmod +x autocommiter.sh && \
     apt update && \
-    apt install -y jq curl
+    apt install -y jq curl git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/man/?? /usr/share/man/??_*
 
-CMD /opt/autocommiter.sh
+CMD ./autocommiter.sh
