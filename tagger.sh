@@ -1,11 +1,12 @@
 #!/bin/bash
 #
+# Copyright (C) 2018 Pawel Krupa (@paulfantom) - All Rights Reserved
+# Permission to copy and modify is granted under the MIT license
+#
 # Script uses TRAVIS_COMMIT_MESSAGE to automatically tag repository according to semantic versioning scheme.
 # Requirements:
 #   - `semver` python program (pip install semver)
 #   - GH_TOKEN variable set with GitHub token. Access level: repo.public_repo
-#
-# Author: Pawel Krupa (@paulfantom)
 #
 
 # Some basic variables
