@@ -22,6 +22,7 @@ fi
 
 ORGANIZATION=${ORGANIZATION:-prometheus}
 TARGET=${TARGET:-prometheus}
+TARGET_ROLE="${TARGET//_/-}"
 GIT_MAIL="cloudalchemybot@gmail.com"
 GIT_USER="cloudalchemybot"
 
@@ -32,8 +33,8 @@ LINK="https://api.github.com/repos/$ORGANIZATION/$TARGET/releases/latest"
 VERSION=$(curl "$LINK" 2>/dev/null | jq -r '.tag_name' | sed 's/^v//')
 [ "$VERSION" == "" ] && exit 1
 
-git clone --depth=1 "https://github.com/cloudalchemy/ansible-$TARGET.git" "/tmp/ansible-$TARGET"
-cd "/tmp/ansible-$TARGET" || exit 1
+git clone --depth=1 "https://github.com/cloudalchemy/ansible-$TARGET_ROLE.git" "/tmp/ansible-$TARGET_ROLE"
+cd "/tmp/ansible-$TARGET_ROLE" || exit 1
 CURR=$(grep "_version" defaults/main.yml | awk -F ': ' '{print $2}')
 
 if [ "${CURR}" == "${VERSION}" ]; then
@@ -42,14 +43,14 @@ else
 	git config user.email "${GIT_MAIL}"
     git config user.name "${GIT_USER}"
     git remote rm origin
-    git remote add origin "https://${GIT_USER}:${GH_TOKEN}@github.com/cloudalchemy/ansible-$TARGET.git" &>/dev/null
+    git remote add origin "https://${GIT_USER}:${GH_TOKEN}@github.com/cloudalchemy/ansible-$TARGET_ROLE.git" &>/dev/null
     git checkout -b "release_$VERSION"
     sed -i "s/_version: $CURR/_version: $VERSION/" defaults/main.yml
     git add defaults/main.yml
     git commit -m "bump version to $VERSION"
     git push --set-upstream origin "release_$VERSION" &>/dev/null
     curl -H "Authorization: token ${GH_TOKEN}" \
-    	 -X POST "https://api.github.com/repos/cloudalchemy/ansible-$TARGET/pulls" \
+    	 -X POST "https://api.github.com/repos/cloudalchemy/ansible-$TARGET_ROLE/pulls" \
     	 -d "{\"title\": \"${PR_TITLE}\", \"head\": \"release_$VERSION\", \"body\": \"${PR_MSG}\", \"base\": \"master\"}" \
     	 &>/dev/null || echo "Couldn't create Pull Request"
 fi
